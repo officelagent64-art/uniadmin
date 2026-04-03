@@ -1,8 +1,8 @@
 // ============================================
 // ⚠️  REMPLACE CES 2 VALEURS
 // ============================================
-const SUPABASE_URL      = 'https://VOTRE_PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'VOTRE_ANON_KEY';
+const SUPABASE_URL      = 'https://gmcmipfctffnbqmaqiji.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_zp7wyQP8LswdF8bNPbTUzA_ZTPzEMCS';
 // ============================================
 
 const { createClient } = supabase;
