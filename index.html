@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniAdmin | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* نفس التنسيقات المستخدمة في login-admin */
+        .upload-card {
+            transition: all 0.3s ease;
+        }
+        .upload-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+        .dropzone {
+            transition: all 0.2s;
+        }
+        .dropzone:hover, .dropzone.dragover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.04);
+        }
+        .toast {
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-200 min-h-screen transition-colors duration-500">
+
+    <!-- Navbar - نفس تصميم login-admin بالضبط -->
+    <nav class="fixed top-0 left-0 right-0 z-[100] backdrop-blur-lg bg-white/85 dark:bg-slate-950/85 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap text-base"></i>
+                </div>
+                <span class="text-xl font-bold text-slate-900 dark:text-white">UniAdmin</span>
+            </a>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center">
+                    <i id="theme-icon" class="fa-solid fa-moon text-slate-500 dark:text-amber-400"></i>
+                </button>
+                <div class="h-5 w-px bg-slate-200 dark:bg-slate-800"></div>
+                <button id="logout-btn" class="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[12px] font-bold rounded-lg uppercase tracking-wider hover:opacity-90 transition-opacity whitespace-nowrap">
+                    LOG OUT
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 pt-28 pb-20 fade-in">
+        
+        <!-- Welcome Section -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Manage university schedules and academic records</p>
+        </div>
+
+        <!-- Planning & Notes Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            
+            <!-- Planning Card -->
+            <div class="upload-card bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                        <i class="fa-solid fa-calendar-alt text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Upload Schedule</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Format: G1_L1.xlsx → stored in "planning"</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Level</label>
+                            <select id="planning-level" class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-blue-500/50">
+                                <option value="L1">L1</option>
+                                <option value="L2">L2</option>
+                                <option value="L3">L3</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Group</label>
+                            <select id="planning-group" class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-blue-500/50">
+                                <option value="G1">G1</option>
+                                <option value="G2">G2</option>
+                                <option value="G3">G3</option>
+                                <option value="G4">G4</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="planning-dropzone" class="dropzone border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-6 text-center cursor-pointer relative">
+                        <input type="file" accept=".xlsx,.xls" id="planning-file" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <i class="fa-solid fa-cloud-upload-alt text-3xl text-slate-400 mb-2"></i>
+                        <p class="text-sm text-slate-500 dark:text-slate-400"><strong class="text-blue-600 dark:text-blue-400">Choose Excel file</strong><br>.xlsx or .xls only</p>
+                    </div>
+
+                    <div id="planning-file-info" class="hidden flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span id="planning-file-name"></span>
+                    </div>
+
+                    <button id="planning-btn" disabled class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-upload mr-2"></i> Upload Schedule
+                    </button>
+
+                    <div id="planning-progress" class="hidden">
+                        <div class="h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div id="planning-fill" class="h-full bg-blue-600 rounded-full transition-all" style="width: 0%"></div>
+                        </div>
+                        <p id="planning-progress-text" class="text-xs text-slate-500 dark:text-slate-400 text-center mt-1">Uploading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Card -->
+            <div class="upload-card bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <i class="fa-solid fa-chart-simple text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Upload Grades</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Format: L1.xlsx → stored in "notes"</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Level</label>
+                        <select id="notes-level" class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-emerald-500/50">
+                            <option value="L1">L1</option>
+                            <option value="L2">L2</option>
+                            <option value="L3">L3</option>
+                            <option value="M1">M1</option>
+                            <option value="M2">M2</option>
+                        </select>
+                    </div>
+
+                    <div id="notes-dropzone" class="dropzone border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-6 text-center cursor-pointer relative">
+                        <input type="file" accept=".xlsx,.xls" id="notes-file" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <i class="fa-solid fa-cloud-upload-alt text-3xl text-slate-400 mb-2"></i>
+                        <p class="text-sm text-slate-500 dark:text-slate-400"><strong class="text-emerald-600 dark:text-emerald-400">Choose Excel file</strong><br>.xlsx or .xls only</p>
+                    </div>
+
+                    <div id="notes-file-info" class="hidden flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span id="notes-file-name"></span>
+                    </div>
+
+                    <button id="notes-btn" disabled class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-upload mr-2"></i> Upload Grades
+                    </button>
+
+                    <div id="notes-progress" class="hidden">
+                        <div class="h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div id="notes-fill" class="h-full bg-emerald-600 rounded-full transition-all" style="width: 0%"></div>
+                        </div>
+                        <p id="notes-progress-text" class="text-xs text-slate-500 dark:text-slate-400 text-center mt-1">Uploading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Section -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Stored Files</h2>
+                <button id="refresh-btn" class="px-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Refresh
+                </button>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <div id="files-table-container" class="p-6">
+                    <div class="text-center text-slate-500 dark:text-slate-400 py-8">
+                        <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
+                        <p>No files found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toasts" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="home.js"></script>
+    
+</body>
+</html>
